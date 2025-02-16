@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel,Field,EmailStr,ConfigDict
-
+from app.models import db_helper
 
 class UserSchema(BaseModel):
     username: str = Field(max_length=100)
@@ -9,9 +9,19 @@ class UserSchema(BaseModel):
     model_config = ConfigDict(extra='forbid')
 
 
-UserSchema()
-app = FastAPI()
+@asynccontextmanager
+async def lifespan():
+    yield
 
-@app.get("/")
+    await db_helper.dispose()
+
+
+UserSchema()
+main_app = FastAPI(
+    lifespan=lifespan
+)
+
+
+@main_app.get("/")
 def root():
     return "hello world"
