@@ -16,5 +16,11 @@ class DatabaseHelper:
             expire_on_commit=False,
         )
 
+    async def dispose(self):
+        await self.engine.dispose()
+
+    async def session_getter(self):
+        async with self.session_factory() as session:
+            yield session
 
 db_helper = DatabaseHelper(url = settings.db_url, echo=settings.db_echo)
