@@ -1,4 +1,3 @@
-version: '3.8'
 
 services:
   db:
@@ -17,4 +16,4 @@ services:
     restart: always
 
 volumes:
-  pgdata: # Named volume for database persistence
+  pgdata:

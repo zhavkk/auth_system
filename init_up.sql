@@ -1,3 +1,6 @@
+DROP TABLE IF EXISTS users CASCADE;
+DROP TABLE IF EXISTS roles CASCADE;
+DROP TABLE IF EXISTS auth_history CASCADE;
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     username VARCHAR(255) UNIQUE NOT NULL, 
@@ -9,7 +12,8 @@ CREATE TABLE users (
     first_name VARCHAR(255),               
     last_name VARCHAR(255),                
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    social_provider VARCHAR(50)
 );
 
 CREATE TABLE roles (
