@@ -1,7 +1,6 @@
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List
-
-
+from datetime import datetime
 
 class UserBase(BaseModel):
     username: str
@@ -14,15 +13,15 @@ class UserCreate(UserBase):
     role_id: int = 2  # Default role is 'user'
     social_provider: Optional[str] = None  # yandex/vk/local
 
-class User(UserBase):
+class UserSchema(UserBase):
     id: int
-    role: Role
-    created_at: Optional[str]
-    updated_at: Optional[str]
+    role: str
+    created_at: datetime
+    updated_at: datetime
 
     class Config:
         from_attributes = True
 
-class UserInDB(User):
+class UserInDB(UserSchema):
     password_hash: str
 
