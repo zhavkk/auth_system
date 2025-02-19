@@ -1,9 +1,18 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+from typing import Optional, List
 
+class AuthHistoryBase(BaseModel):
+    ip_address: Optional[str]
+    user_agent: Optional[str]
+    success: bool = True
 
-class AuthHistorySchema(BaseModel):
+class AuthHistoryCreate(AuthHistoryBase):
+    pass
+
+class AuthHistory(AuthHistoryBase):
     id: int
-    user_id: int
     login_time: str
-    user_agent: str
-    ip_address: str
+    user_id: int
+
+    class Config:
+        from_attributes = True
