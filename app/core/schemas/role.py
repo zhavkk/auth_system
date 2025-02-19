@@ -11,6 +11,5 @@ class RoleCreate(RoleBase):
 
 class Role(RoleBase):
     id: int
-
     class Config:
         from_attributes = True

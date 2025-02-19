@@ -9,11 +9,14 @@ from core.schemas.user import UserCreate
 
 async def get_all_users(
     session: AsyncSession,
+    current_user: User,
 ) -> Sequence[User]:
+    if current_user.role.name != "admin":
+        raise HTTPException(status_code=403, detail="Forbidden")
+    
     stmt = select(User).order_by(User.id)
     result = await session.scalars(stmt)
     return result.all()
-
 
 async def get_user(
     session: AsyncSession,
