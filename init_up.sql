@@ -21,7 +21,6 @@ CREATE TABLE auth_history (
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     ip_address VARCHAR(100),
-    user_agent TEXT,
     success BOOLEAN NOT NULL DEFAULT TRUE
 );
 
