@@ -1,13 +1,15 @@
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(255) UNIQUE NOT NULL,
-    email VARCHAR(255) UNIQUE NOT NULL,
-    password_hash TEXT,
-    role_id INT NOT NULL,
+    username VARCHAR(255) UNIQUE NOT NULL, 
+    email VARCHAR(255) UNIQUE NOT NULL,    
+    password_hash TEXT,                    
+    yandex_id VARCHAR(255) UNIQUE,         
+    vk_id VARCHAR(255) UNIQUE,             
+    role_id INT NOT NULL,                  
+    first_name VARCHAR(255),               
+    last_name VARCHAR(255),                
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    yandex_id VARCHAR(255) UNIQUE,
-    vk_id VARCHAR(255) UNIQUE
 );
 
 CREATE TABLE roles (
