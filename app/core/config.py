@@ -29,7 +29,7 @@ class Settings(BaseSettings):
         env_nested_delimiter="__",
         env_prefix="APP_CONFIG__",
     )
-    secret_key :str = "blablabla"
+    secret_key :str = "blablabla" #перенести в .env
     algorithm: str = "HS256"
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()

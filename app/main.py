@@ -1,4 +1,3 @@
-# main.py
 from fastapi import FastAPI, status, Depends, HTTPException
 from pydantic import BaseModel, Field, EmailStr, ConfigDict
 from core.models import db_helper
@@ -11,10 +10,12 @@ from core.models.db_helper import get_db
 from core.models import User
 from core.security import get_password_hash
 from api import router as router_1
+from api import admin_router as admin_router
 
 main_app = FastAPI()
 
 main_app.include_router(router_1)
+main_app.include_router(admin_router)
 
 @main_app.get("/hello/")
 def root():

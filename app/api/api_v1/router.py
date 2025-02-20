@@ -12,7 +12,7 @@ from datetime import timedelta
 from passlib.context import CryptContext
 from core.security import verify_password
 router = APIRouter(prefix="/demo-auth")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/demo-auth/token")
 
 @router.post("/register", response_model=UserSchema, status_code=status.HTTP_201_CREATED)
 def register_user(
@@ -53,3 +53,6 @@ def login_for_access_token(
     )
     
     return {"access_token": access_token, "token_type": "bearer"}
+
+#TODO: get_all_users for admin (nujno dostat' user_id from payload)
+
