@@ -38,9 +38,7 @@ def login_for_access_token(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
-        )
-    
-    # В JWT теперь добавляем role_id вместо role.name
+        )    
     access_token_expires = timedelta(minutes=30)
     access_token = create_access_token(
         data={"username": user.username, "role_id": user.role_id}, expires_delta=access_token_expires

@@ -10,7 +10,6 @@ def get_user_by_username(db: Session, username: str) -> Optional[User]:
     return db.query(User).filter(User.username == username).first()
 
 
-# cruds/users.py
 def create_user(
     db: Session,
     username: str,
@@ -24,19 +23,14 @@ def create_user(
 
     hashed_password = get_password_hash(password)
 
-    # Извлекаем роль по id, но не присваиваем ее в new_user
-    # Эта строка остается, если вы хотите проверить роль в процессе создания
-    # use_role_name = db.query(Role).filter(Role.id == role_id).first()
-    
     new_user = User(
         username=username,
         email=email,
         password_hash=hashed_password,
-        role_id=role_id,  # Просто сохраняем role_id
+        role_id=role_id,  
         yandex_id=yandex_id,
         vk_id=vk_id,
         social_provider=social_provider,
-        # Не присваиваем 'role', так как это не нужно
     )
 
     db.add(new_user)
