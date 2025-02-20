@@ -10,7 +10,7 @@ from core.security import create_access_token
 from typing import Any
 from datetime import timedelta
 from passlib.context import CryptContext
-
+from core.security import verify_password
 router = APIRouter(prefix="/demo-auth")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -33,7 +33,7 @@ def login_for_access_token(
 ):
     user = get_user_by_username(db, form_data.username)
     
-    if not user or not pwd_context.verify(form_data.password, user.password_hash):
+    if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
