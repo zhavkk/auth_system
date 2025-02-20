@@ -16,9 +16,11 @@ def create_user(
     email: str,
     password: str,
     role_id: int,
+    first_name: Optional[str] = None,
+    last_name: Optional[str] = None,
+    social_provider: Optional[str] = None,
     yandex_id: Optional[str] = None,
-    vk_id: Optional[str] = None,
-    social_provider: Optional[str] = None
+    vk_id: Optional[str] = None
 ) -> User:
 
     hashed_password = get_password_hash(password)
@@ -31,6 +33,8 @@ def create_user(
         yandex_id=yandex_id,
         vk_id=vk_id,
         social_provider=social_provider,
+        first_name = first_name,
+        last_name = last_name
     )
 
     db.add(new_user)

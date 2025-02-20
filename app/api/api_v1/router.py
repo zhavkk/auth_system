@@ -23,15 +23,16 @@ def register_user(
         raise HTTPException(status_code=400, detail="Username already registered")
         
     user = create_user(
-        db, 
-        user_data.username,
-         user_data.email,
-          user_data.password,
-           user_data.role_id,
-           user_data.first_name,
-           user_data.last_name,
-           user_data.social_provider
+        db=db,
+        username=user_data.username,
+        email=user_data.email,
+        password=user_data.password,
+        role_id=user_data.role_id,
+        first_name=user_data.first_name,
+        last_name=user_data.last_name,
+        social_provider=user_data.social_provider
     )
+
     return user
 
 @router.post("/token", response_model=Token)
