@@ -2,7 +2,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Integer, ForeignKey, TIMESTAMP
 from sqlalchemy.sql import func
 from .base import Base
-
+from pydantic import BaseModel
 class User(Base):
     __tablename__ = "users"
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -24,3 +24,11 @@ class User(Base):
     auth_history: Mapped[list["AuthHistory"]] = relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    username: str
+    role: str

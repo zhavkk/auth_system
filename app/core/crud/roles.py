@@ -1,21 +1,16 @@
-from typing import Sequence
-
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.future import select
+from sqlalchemy.exc import NoResultFound
+from typing import Optional
+from core.models.role import Role
+async def get_role_by_name(db: AsyncSession, role_name: str) -> Optional["Role"]:
+    query = select(Role).filter(Role.name == role_name)
+    result = await db.execute(query)
+    return result.scalars().first()
 
-from core.models import Role
-from core.schemas.role import RoleCreate
-
-async def create_new_role(
-    session: AsyncSession,
-    role_create: RoleCreate,
-    current_user: User,  
-) -> Role:
-    if current_user.role.name != "admin":
-        raise HTTPException(status_code=403, detail="Forbidden")
-    
-    role = Role(**role_create.model_dump())
-    session.add(role)
-    await session.commit()
-    await session.refresh(role)
-    return role
+async def create_role(db: AsyncSession, name: str, description: Optional[str] = None) -> Role:
+    new_role = Role(name=name, description=description)
+    db.add(new_role)
+    await db.commit()
+    await db.refresh(new_role)
+    return new_role

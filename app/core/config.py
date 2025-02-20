@@ -8,6 +8,7 @@ class RunConfig(BaseModel):
     host: str = "0.0.0.0"
     port: int = 8000
 
+
 class ApiV1Prefix(BaseModel):
     prefix: str = "/v1"
     users: str = "/users"
@@ -28,6 +29,8 @@ class Settings(BaseSettings):
         env_nested_delimiter="__",
         env_prefix="APP_CONFIG__",
     )
+    secret_key :str = "blablabla"
+    algorithm: str = "HS256"
     run: RunConfig = RunConfig()
     api: ApiPrefix = ApiPrefix()
     db: DatabaseConfig

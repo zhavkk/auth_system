@@ -11,3 +11,5 @@ from .base import Base
 from .user import User
 from .role import Role
 from .auth_history import AuthHistory
+from .user import Token
+from .user import TokenData

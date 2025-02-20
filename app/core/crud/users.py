@@ -1,45 +1,45 @@
-from typing import Sequence
-
-from sqlalchemy import select
+from sqlalchemy.future import select
+from sqlalchemy.exc import NoResultFound
+from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
+from core.models.user import User
+from .roles import get_role_by_name
+from typing import Optional
 
-from core.models import User
-from core.schemas.user import UserCreate
-from sqlalchemy.exc import IntegrityError
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+async def get_user_by_username(db: AsyncSession, username: str) -> Optional[User]:
+    query = select(User).filter(User.username == username)
+    result = await db.execute(query)
+    return result.scalars().first()
 
-async def get_all_users(
-    session: AsyncSession,
-    current_user: User,
-) -> Sequence[User]:
-    if current_user.role.name != "admin":
-        raise HTTPException(status_code=403, detail="Forbidden")
-    
-    stmt = select(User).order_by(User.id)
-    result = await session.scalars(stmt)
-    return result.all()
-
-async def get_user(
-    session: AsyncSession,
-    user_id: int,
-) -> User | None:
-    return await session.get(User, user_id)
-
-
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 async def create_user(
-    session: AsyncSession,
-    user_create: UserCreate,
-) -> User:
-    user_dict = user_create.model_dump()
-    password_hash = get_password_hash(user_dict.pop("password"))
-    user = User(**user_dict, password_hash=password_hash)
+    db: AsyncSession,
+    username: str,
+    email: str,
+    password: str,
+    role_name: str) -> User:
+    hashed_password = pwd_context.hash(password)
     
-    try:
-        session.add(user)
-        await session.commit()
-        await session.refresh(user)
-        return user
-    except IntegrityError:
-        await session.rollback()
-        raise HTTPException(status_code=400, detail="Username or email already exists")
+    query = select(Role).filter(Role.name == role_name)
+    role = await db.execute(query)
+    role = role.scalars().first()
+    
+    if not role:
+        raise ValueError(f"Role '{role_name}' does not exist.")
+    
+    new_user = User(
+        username=username,
+        email=email,
+        password_hash=hashed_password,
+        role_id=role.id,
+    )
+    
+    db.add(new_user)
+    await db.commit()
+    await db.refresh(new_user)
+    
+    return new_user
+
