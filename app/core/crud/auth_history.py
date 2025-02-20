@@ -1,19 +1,14 @@
 from typing import Sequence
-
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
-
+from sqlalchemy.orm import Session  
 from core.models import AuthHistory
-#from core.schemas.auth_history import AuthHistoryCreate
+from fastapi import HTTPException
 
-
-async def get_all_auth_history(
-    session: AsyncSession,
+def get_all_auth_history(
+    db: Session,
     current_user: User,
 ) -> Sequence[AuthHistory]:
     if current_user.role.name != "admin":
         raise HTTPException(status_code=403, detail="Forbidden")
     
-    stmt = select(AuthHistory).order_by(AuthHistory.id)
-    result = await session.scalars(stmt)
-    return result.all()
+    stmt = db.query(AuthHistory).order_by(AuthHistory.id).all()  
+    return stmt

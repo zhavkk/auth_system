@@ -1,16 +1,14 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-from sqlalchemy.exc import NoResultFound
-from typing import Optional
+from sqlalchemy.orm import Session  
 from core.models.role import Role
-async def get_role_by_name(db: AsyncSession, role_name: str) -> Optional["Role"]:
-    query = select(Role).filter(Role.name == role_name)
-    result = await db.execute(query)
-    return result.scalars().first()
+from typing import Optional
 
-async def create_role(db: AsyncSession, name: str, description: Optional[str] = None) -> Role:
+def get_role_by_name(db: Session, role_name: str) -> Optional[Role]:
+    query = db.query(Role).filter(Role.name == role_name)
+    return query.first()
+
+def create_role(db: Session, name: str, description: Optional[str] = None) -> Role:
     new_role = Role(name=name, description=description)
     db.add(new_role)
-    await db.commit()
-    await db.refresh(new_role)
+    db.commit()
+    db.refresh(new_role)
     return new_role
