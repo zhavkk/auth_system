@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status,Request
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session  
 from core.crud import create_user, get_user_by_username
@@ -11,6 +11,7 @@ from typing import Any
 from datetime import timedelta
 from passlib.context import CryptContext
 from core.security import verify_password
+from core.models.auth_history import AuthHistory
 router = APIRouter(prefix="/demo-auth")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/demo-auth/token")
 
@@ -37,22 +38,38 @@ def register_user(
 
 @router.post("/token", response_model=Token)
 def login_for_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+    request: Request,  # ip, user_agent
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
 ):
     user = get_user_by_username(db, form_data.username)
-    
-    if not user or not verify_password(form_data.password, user.password_hash):
+    success = False
+
+    if user and verify_password(form_data.password, user.password_hash):
+        success = True
+        access_token_expires = timedelta(minutes=30)
+        access_token = create_access_token(
+            data={"username": user.username, "role_id": user.role_id},
+            expires_delta=access_token_expires
+        )
+        token_dict = {"access_token": access_token, "token_type": "bearer"}
+    else:
+        token_dict = {}
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect username or password",
             headers={"WWW-Authenticate": "Bearer"},
-        )    
-    access_token_expires = timedelta(minutes=30)
-    access_token = create_access_token(
-        data={"username": user.username, "role_id": user.role_id}, expires_delta=access_token_expires
-    )
+        )
     
-    return {"access_token": access_token, "token_type": "bearer"}
+    auth_record = AuthHistory(
+        user_id=user.id if user else None, 
+        success=success,
+        ip_address=request.client.host,     
+        user_agent=request.headers.get("User-Agent"),  
+    )
+    db.add(auth_record)
+    db.commit()
 
+    return token_dict
 #TODO: get_all_users for admin (nujno dostat' user_id from payload)
 

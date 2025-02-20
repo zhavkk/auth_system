@@ -27,7 +27,8 @@ CREATE TABLE auth_history (
     user_id INT REFERENCES users(id) ON DELETE CASCADE,
     login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     ip_address VARCHAR(100),
-    success BOOLEAN NOT NULL DEFAULT TRUE
+    success BOOLEAN NOT NULL DEFAULT TRUE,
+    user_agent VARCHAR(255)
 );
 
 INSERT INTO roles (name, description) VALUES ('admin', 'Администратор');
