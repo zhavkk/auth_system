@@ -31,3 +31,14 @@ NOTE: Для авторизации через VK нужно дополните�
 
 
 ![Пример работы воркера: ](https://github.com/user-attachments/assets/8b7d5c3e-f318-4e79-afaf-33c28ba1378d)
+
+
+
+# HOW TO START
+Ставим .env, все необходимые переменные прописаны в .env.template
+
+1. docker-compose up -d
+
+2. cd app/core
+
+3. python3 kafka_worker.py
