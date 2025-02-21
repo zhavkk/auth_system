@@ -12,15 +12,27 @@ from core.security import get_password_hash
 from api import router as router_1
 from api import admin_router as admin_router
 from api import yandex_router,vk_router
+from core.config import ApiPrefix
 main_app = FastAPI()
+api_prefix = ApiPrefix()
 
-main_app.include_router(router_1)
-main_app.include_router(admin_router)
-main_app.include_router(yandex_router)
-main_app.include_router(vk_router)
-@main_app.get("/hello/")
-def root():
-    return "hello world"
+main_app.include_router(
+    router_1,
+    prefix=api_prefix.prefix + api_prefix.v1.prefix
+    )
+main_app.include_router(
+    admin_router,
+    prefix=api_prefix.prefix + api_prefix.v1.prefix
+    )
+
+# yandex и vk не добавляю префикс, т.к приложения уже зарегал на прошлый redirect_url   
+main_app.include_router(
+    yandex_router
+    )
+main_app.include_router(
+    vk_router
+    )
+
 
 if __name__ == "__main__":
     uvicorn.run(

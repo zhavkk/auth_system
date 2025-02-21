@@ -16,7 +16,7 @@ import requests
 from core.config import settings
 import os
 from core.kafka_producer import publish_registration_event
-router = APIRouter(prefix="/login/vk")
+router = APIRouter(prefix="/login/vk",tags=["VK_AUTH"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/vk/token")
 #TO .ENV
 VK_REDIRECT_URI = settings.vk_redirect_uri

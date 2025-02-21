@@ -16,7 +16,7 @@ import requests
 import os
 from core.config import settings
 from core.kafka_producer import publish_registration_event
-router = APIRouter(prefix="/login/yandex")
+router = APIRouter(prefix="/login/yandex",tags=["YANDEX_AUTH"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/yandex/token")
 
 #TODO: TO .ENV

@@ -13,8 +13,20 @@ from passlib.context import CryptContext
 from core.security import verify_password
 from core.models.auth_history import AuthHistory
 from core.kafka_producer import publish_registration_event
-router = APIRouter(prefix="/demo-auth")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/demo-auth/token")
+
+
+from core.config import ApiPrefix
+
+api_prefix = ApiPrefix()
+
+
+tokenURL = api_prefix.prefix + api_prefix.v1.prefix + "/demo-auth/token"
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=tokenURL)
+
+
+router = APIRouter(prefix="/demo-auth",tags=["LOCAL_AUTH"])
+
 
 @router.post("/register", response_model=UserSchema, status_code=status.HTTP_201_CREATED)
 def register_user(
