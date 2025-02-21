@@ -6,3 +6,6 @@
 
 NOTE: Для авторизации через VK нужно дополнительно использовать ngrok
 
+
+
+![Ручки: ](https://raw.githubusercontent.com/zhavkk/auth_system/commit/ru4ki.jpg)
