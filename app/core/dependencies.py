@@ -8,7 +8,15 @@ from core.models.db_helper import get_db
 from core.models.user import User
 from core.config import settings
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/demo-auth/token")
+
+from .config import ApiPrefix
+
+api_prefix = ApiPrefix()
+
+
+tokenURL = api_prefix.prefix + api_prefix.v1.prefix + "/demo-auth/token"
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=tokenURL)
 
 SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
