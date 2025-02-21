@@ -1,0 +1,19 @@
+
+services:
+  db:
+    image: postgres
+    container_name: auth_task
+    environment:
+      - POSTGRES_DB=auth
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=secret
+      - PGDATA=/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init_up.sql:/docker-entrypoint-initdb.d/init_up.sql
+    restart: always
+
+volumes:
+  pgdata:
