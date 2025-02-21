@@ -8,4 +8,4 @@ NOTE: Для авторизации через VK нужно дополните�
 
 
 
-![Ручки: ](https://raw.githubusercontent.com/zhavkk/auth_system/commit/ru4ki.jpg)
+![Ручки: ](https://raw.githubusercontent.com/zhavkk/auth_system/85c5c221f7e6a2d64f0eab96a5c3b115846763c7/ru4ki.jpg)
