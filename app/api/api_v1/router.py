@@ -12,6 +12,7 @@ from datetime import timedelta
 from passlib.context import CryptContext
 from core.security import verify_password
 from core.models.auth_history import AuthHistory
+from core.kafka_producer import publish_registration_event
 router = APIRouter(prefix="/demo-auth")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/demo-auth/token")
 
@@ -33,7 +34,7 @@ def register_user(
         last_name=user_data.last_name,
         social_provider=user_data.social_provider
     )
-
+    publish_registration_event(user)
     return user
 
 @router.post("/token", response_model=Token)

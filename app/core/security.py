@@ -7,7 +7,7 @@ from core.config import settings
 
 from core.models.user import Token,TokenData
 from passlib.context import CryptContext
-
+import os
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def get_password_hash(password: str) -> str:
@@ -19,7 +19,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 #TODO: перенести в .env
 SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
 #JWT ACCES TOKEN GENERATE && VERIFY
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()

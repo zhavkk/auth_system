@@ -12,16 +12,20 @@ from datetime import timedelta
 from passlib.context import CryptContext
 from core.security import verify_password
 from core.models.auth_history import AuthHistory
-router = APIRouter(prefix="/login")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/token")
+import requests
+import os
+from core.config import settings
+from core.kafka_producer import publish_registration_event
+router = APIRouter(prefix="/login/yandex")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/login/yandex/token")
 
 #TODO: TO .ENV
-YANDEX_CLIENT_ID = "533576ab41734b268aa93a30ce2c49ba"
-CLIENT_SECRET = "dd49bd08f2ca45d08c01ea955ba08b80"
-REDIRECT_URI = "http://localhost:8000/login/yandex/callback"
+YANDEX_CLIENT_ID = settings.yandex_client_id
+YANDEX_CLIENT_SECRET = settings.yandex_client_secret
+REDIRECT_URI = settings.redirect_uri
 
 
-@router.get("/yandex")
+@router.get("/")
 def login_yandex():
     """
     перенаправляем на яндекс
@@ -33,13 +37,13 @@ def login_yandex():
         f"&redirect_uri={REDIRECT_URI}"
         "&scope=login:email" 
     )
-    return RedirectResponse(yandex_oauth_url)
+    return {"redirect_url": yandex_oauth_url}
 
 
-@router.get("/yandex/callback")
+@router.get("/callback")
 def yandex_callback(code: str, db: Session = Depends(get_db)):
     """
-    Яндекс перенаправляет на этот эндпоинт с параметром `code`.
+    Яндекс перенаправляет на этот эндпоинт с параметром code,
     По этому коду мы запросим access_token от Яндекса и узнаем данные о пользователе.
     """
     token_url = "https://oauth.yandex.ru/token"
@@ -82,4 +86,6 @@ def yandex_callback(code: str, db: Session = Depends(get_db)):
     access_token = create_access_token(
         data={"username": user.username, "role_id": user.role_id}
     )
+    publish_registration_event(user)
+
     return {"access_token": access_token, "token_type": "bearer"}
